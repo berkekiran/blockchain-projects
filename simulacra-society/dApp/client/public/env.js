@@ -1,3 +1,1 @@
-window.env = {
-  "Whitelist_Addresses": "[\"\",\"\"]"
-};
+window.env = {};

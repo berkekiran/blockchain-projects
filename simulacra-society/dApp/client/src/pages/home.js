@@ -215,7 +215,7 @@ function Home() {
     const weiCost = "25000000000000000";
     const baseGasLimit = "285000";
   
-    const whitelistAddresses = JSON.parse(env.Whitelist_Addresses);
+    //const whitelistAddresses = JSON.parse(env.Whitelist_Addresses);
   
     //Default Mint --------------------------------------------------
     
@@ -269,49 +269,49 @@ function Home() {
     //Whitelist Mint --------------------------------------------------
   
     const whitelistMint = () => {
-      let cost = weiCost;
-      let gasLimit = baseGasLimit;
-      let totalCostWei = String(cost * mintAmount);
-      let totalGasLimit = String(gasLimit * mintAmount);
+    //   let cost = weiCost;
+    //   let gasLimit = baseGasLimit;
+    //   let totalCostWei = String(cost * mintAmount);
+    //   let totalGasLimit = String(gasLimit * mintAmount);
   
-      setNotification(`Minting...`);
-      setWhitelistMintState(true);
+    //   setNotification(`Minting...`);
+    //   setWhitelistMintState(true);
   
-      const leafNodes = whitelistAddresses.map(addr => keccak256(addr));
-      const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true});
-      let currentAccountAddress = Web3.utils.toChecksumAddress(blockchain.account).toString();
+    //   const leafNodes = whitelistAddresses.map(addr => keccak256(addr));
+    //   const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true});
+    //   let currentAccountAddress = Web3.utils.toChecksumAddress(blockchain.account).toString();
   
-      if(whitelistAddresses.findIndex((address) => address == currentAccountAddress) == -1) {
+    //   if(whitelistAddresses.findIndex((address) => address == currentAccountAddress) == -1) {
   
-        setNotification("Address is not in the whitelist.");
-        setWhitelistMintState(false);
-        dispatch(fetchData(blockchain.account));
+    //     setNotification("Address is not in the whitelist.");
+    //     setWhitelistMintState(false);
+    //     dispatch(fetchData(blockchain.account));
   
-      } else {
+    //   } else {
   
-        let claimingAddress = leafNodes[whitelistAddresses.findIndex((address) => address == currentAccountAddress)];
-        let hexProof = merkleTree.getHexProof(claimingAddress);
+    //     let claimingAddress = leafNodes[whitelistAddresses.findIndex((address) => address == currentAccountAddress)];
+    //     let hexProof = merkleTree.getHexProof(claimingAddress);
   
-        blockchain.smartContract.methods.whitelistMint(mintAmount, hexProof).send({
-          gasLimit: String(totalGasLimit),
-          to: contractAddress,
-          from: blockchain.account,
-          value: totalCostWei,
+    //     blockchain.smartContract.methods.whitelistMint(mintAmount, hexProof).send({
+    //       gasLimit: String(totalGasLimit),
+    //       to: contractAddress,
+    //       from: blockchain.account,
+    //       value: totalCostWei,
   
-        }).once("error", (err) => {
-          if(err.message == "MetaMask Tx Signature: User denied transaction signature."){
-            setNotification("User denied transaction signature.");
-          } else {
-            setNotification(err.message);
-          }
-          setWhitelistMintState(false);
+    //     }).once("error", (err) => {
+    //       if(err.message == "MetaMask Tx Signature: User denied transaction signature."){
+    //         setNotification("User denied transaction signature.");
+    //       } else {
+    //         setNotification(err.message);
+    //       }
+    //       setWhitelistMintState(false);
   
-        }).then((receipt) => {
-          setNotification("Successfully minted.");
-          setWhitelistMintState(false);
-          dispatch(fetchData(blockchain.account));
-        });
-      }
+    //     }).then((receipt) => {
+    //       setNotification("Successfully minted.");
+    //       setWhitelistMintState(false);
+    //       dispatch(fetchData(blockchain.account));
+    //     });
+    //   }
     };
   
     const decrementWhitelistMintAmount = () => {
